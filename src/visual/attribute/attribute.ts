@@ -52,7 +52,7 @@ export class Attribute {
    */
   public scales: ScaleDef[];
 
-  constructor(cfg: AttributeCfg) {
+  constructor(cfg: Partial<AttributeCfg>) {
     this.update(cfg);
     this.type = 'base';
   }

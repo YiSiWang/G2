@@ -4,7 +4,6 @@ import { ScaleDef } from '../../../../src/visual/scale';
 describe('attribute base', () => {
   test('default options', () => {
     const attr = new Attribute({
-      fields: [],
       scales: [],
       value: [],
       callback: () => {
@@ -79,5 +78,39 @@ describe('attribute base', () => {
     expect(attr.mapping(9)).toStrictEqual([18]);
 
     expect(fn).toBeCalledTimes(4);
+  });
+
+  test('map with no params', () => {
+    const scaleIdentity = new ScaleDef({
+      type: 'identity',
+    });
+
+    const attr = new Attribute({
+      scales: [scaleIdentity],
+      fields: ['base'],
+      value: [10],
+    });
+
+    expect(attr.mapping()).toStrictEqual([10]);
+    expect(attr.mapping()).toStrictEqual([10]);
+    expect(attr.mapping()).toStrictEqual([10]);
+    expect(attr.mapping()).toStrictEqual([10]);
+  });
+
+  test('callback dont return any value', () => {
+    const fn = jest.fn();
+
+    const scaleIdentity = new ScaleDef({
+      type: 'identity',
+    });
+
+    const attr = new Attribute({
+      scales: [scaleIdentity],
+      fields: ['base'],
+      callback: fn,
+    });
+
+    expect(attr.mapping(10)).toStrictEqual([10]);
+    expect(fn).toBeCalled();
   });
 });
