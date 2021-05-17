@@ -1,4 +1,5 @@
 import { Attribute } from '@g2/visual/attribute';
+import { ScaleDef } from '../../../../src/visual/scale';
 
 describe('attribute base', () => {
   test('default options', () => {
@@ -39,5 +40,44 @@ describe('attribute base', () => {
     expect(attr.value).toStrictEqual([0]);
     expect(attr.callback).toBeUndefined();
     expect(attr.scales).toStrictEqual([]);
+  });
+
+  test('test mapping', () => {
+    const scaleIdentity = new ScaleDef({
+      type: 'identity',
+    });
+
+    const attr = new Attribute({
+      scales: [scaleIdentity],
+      fields: ['base'],
+    });
+
+    expect(attr.mapping(5)).toStrictEqual([5]);
+    expect(attr.mapping(6)).toStrictEqual([6]);
+    expect(attr.mapping(7)).toStrictEqual([7]);
+    expect(attr.mapping(8)).toStrictEqual([8]);
+  });
+
+  test('use custom callback', () => {
+    const fn = jest.fn((val) => {
+      return val * 2;
+    });
+
+    const scaleIdentity = new ScaleDef({
+      type: 'identity',
+    });
+
+    const attr = new Attribute({
+      scales: [scaleIdentity],
+      fields: ['base'],
+      callback: fn,
+    });
+
+    expect(attr.mapping(6)).toStrictEqual([12]);
+    expect(attr.mapping(7)).toStrictEqual([14]);
+    expect(attr.mapping(8)).toStrictEqual([16]);
+    expect(attr.mapping(9)).toStrictEqual([18]);
+
+    expect(fn).toBeCalledTimes(4);
   });
 });

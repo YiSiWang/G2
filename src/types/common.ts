@@ -10,7 +10,7 @@ export type Constructable<R = any> = {
   new (...args: any[]): R;
 };
 
-export type Callback = (...args: any[]) => any[];
+export type Callback = (...args: any[]) => any;
 
 /**
  * 一个点的定义
