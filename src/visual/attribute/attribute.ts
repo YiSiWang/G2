@@ -30,7 +30,7 @@ export abstract class Attribute {
   /**
    * attribute 的类型
    */
-  public type: 'base' | 'position';
+  public type: 'base' | 'position' | 'size';
 
   /**
    * 字段信息
@@ -67,7 +67,10 @@ export abstract class Attribute {
    * @param params 需要映射的值（对应 scale 顺序的值传入）
    * @return {any[]} 映射结果
    */
-  public abstract mapping(...params: any[]): any[];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected mapping(...params: any[]) {
+    return [];
+  }
 
   /**
    * 更新 Attribute 配置
@@ -75,7 +78,12 @@ export abstract class Attribute {
    * @param cfg attribute 配置
    */
   public update(cfg: AttributeCfg) {
-    const { fields = [], scales = [], value = [], callback } = cfg;
+    const {
+      fields = [],
+      scales = [],
+      value = [],
+      callback,
+    } = cfg;
 
     this.fields = fields;
     this.value = value;
