@@ -1,7 +1,6 @@
 import { isNil } from '@antv/util';
+import { Callback } from '@g2/types';
 import { ScaleDef } from '../scale';
-
-export type Callback = (...args: any[]) => any[];
 
 export type AttributeCfg = {
   /**
@@ -27,7 +26,7 @@ export type AttributeCfg = {
  *
  * @class Base
  */
-export abstract class Attribute {
+export class Attribute {
   /**
    * attribute 的类型
    */
@@ -53,8 +52,9 @@ export abstract class Attribute {
    */
   public scales: ScaleDef[];
 
-  protected constructor(cfg: AttributeCfg) {
+  constructor(cfg: AttributeCfg) {
     this.update(cfg);
+    this.type = 'base';
   }
 
   /**
@@ -64,7 +64,7 @@ export abstract class Attribute {
    * @return {any[]} 映射结果
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected mapping(...params: any[]) {
+  public mapping(...params: any[]) {
     if (this.callback) {
       const ret = this.callback(...params);
       if (!isNil(ret)) {
@@ -96,7 +96,7 @@ export abstract class Attribute {
    *
    * @param cfg attribute 配置
    */
-  public update(cfg: AttributeCfg) {
+  public update(cfg: Partial<AttributeCfg>) {
     const {
       fields = [],
       scales = [],
