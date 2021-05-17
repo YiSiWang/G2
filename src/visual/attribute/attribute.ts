@@ -1,3 +1,4 @@
+import { isNil } from '@antv/util';
 import { ScaleDef } from '../scale';
 
 export type Callback = (...args: any[]) => any[];
@@ -38,7 +39,7 @@ export abstract class Attribute {
   public fields: string[];
 
   /**
-   * 映射的值范围
+   * 需要映射的值的范围
    */
   public value: any[] = [];
 
@@ -52,11 +53,6 @@ export abstract class Attribute {
    */
   public scales: ScaleDef[];
 
-  /**
-   * 是否是 linear 线性映射
-   */
-  public isLinear: boolean = false;
-
   protected constructor(cfg: AttributeCfg) {
     this.update(cfg);
   }
@@ -69,7 +65,30 @@ export abstract class Attribute {
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected mapping(...params: any[]) {
-    return [];
+    if (this.callback) {
+      const ret = this.callback(...params);
+      if (!isNil(ret)) {
+        return [ret];
+      }
+    }
+    return this.defaultCallback(...params);
+  }
+
+  private defaultCallback(...params: any[]): any[] {
+    // 没有 params 的情况，即没有指定 fields，直接返回配置的 values 常量
+    if (params.length === 0) {
+      return this.value;
+    }
+
+    const results = [];
+    const len = params.length;
+    for (let i = 0; i < len; i += 1) {
+      const targetScale = this.scales[i];
+      const val = params[i];
+      results.push(targetScale.map(val));
+    }
+
+    return results;
   }
 
   /**
